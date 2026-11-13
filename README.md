@@ -8,7 +8,37 @@ QA practice project for over-the-air firmware updates on a streaming stick with 
 |---|---|
 | [requirements.md](requirements.md) | Update behavior requirements (retry rules, rollback, settings preservation), each with an ID and status |
 | [fw-update-test-cases.md](fw-update-test-cases.md) | Test cases with preconditions, steps, expected results and priority (P0–P3) |
+| [traceability.md](traceability.md) | Which test cases and planned automated tests cover each requirement, plus gaps found in review |
 | [fwsim/](fwsim/) | A small Python simulator of the update logic, for automated tests without hardware |
+| [demo.py](demo.py) | Runs six update scenarios on the simulator and prints what happens |
+
+## How to run
+
+**Requirements:** Python 3.10 or newer. Nothing to install: the simulator uses only the standard library. Check your version with `python3 --version`.
+
+```
+git clone https://github.com/ellnika/firmware-qa-practice.git
+cd firmware-qa-practice
+python3 demo.py
+```
+
+The demo runs six scenarios: a normal update, a brief and a long Wi-Fi drop (optional and mandatory update), a power loss during install, and a rollback after 3 failed boots. For each one it prints a timeline and the end result:
+
+```
+=== Brief Wi-Fi drop (30 s) ===
+  t=  40s  wifi_down
+  t=  40s  download_interrupted                 percent=40.0
+  t=  70s  wifi_up
+  t=  70s  wifi_back_resume
+  t=  70s  download_resumed                     percent=40.0
+  ...
+  -> state=UPDATED, running firmware 2.0, settings={...}, working=True
+```
+
+- `t=` is **simulated** time in seconds. The whole demo finishes in under a second.
+- The `->` line is where the device ended up: its state, the firmware it runs, its settings, and whether it is working.
+
+To try your own scenario, copy a block in `demo.py` and change the faults, e.g. `WifiDrop(at_percent=80, duration_s=200)`.
 
 ## Simulator
 
@@ -39,4 +69,5 @@ assert sim.active_version == "1.0"
 ## Status
 
 - Requirements: core rules agreed; section 7 lists default behaviors still to confirm.
-- Automated pytest suite: not written yet.
+- Traceability: requirements mapped to test cases and 24 planned pytest tests; gaps listed in [traceability.md](traceability.md).
+- Automated pytest suite: planned, not written yet.
