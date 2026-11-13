@@ -75,4 +75,4 @@ Added `test_retries_60s_after_each_drop`: two drops, and the first retry after e
 
 - Claude Code seeded the defect, ran the tests, compared the event logs and drafted this report.
 - Each claim above was checked against the actual test output and event log printed during the investigation.
-- Review by Ewa: _pending_ (confirm the root cause, the severity, and that the new test checks what REQ-21 and REQ-62 mean).
+- Reviewed by Ewa, 2026-11-13: agreed with the root cause, severity High, and that the new test checks what REQ-21 and REQ-62 mean.
