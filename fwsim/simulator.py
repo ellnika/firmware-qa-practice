@@ -269,8 +269,8 @@ class Simulator:
             self._resume()
             return
         elapsed = self.time - self._failed_at
-        if elapsed % RETRY_INTERVAL_S:
-            return
+        if elapsed == 0 or elapsed % RETRY_INTERVAL_S:
+            return  # first retry is 60 s after the failure (REQ-21)
         self.retry_count += 1
         if self.wifi_up:
             self._log("auto_retry_ok", attempt=self.retry_count)
