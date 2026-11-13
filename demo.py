@@ -8,7 +8,7 @@ from fwsim import BootFailure, FirmwareImage, PowerLoss, Simulator, WifiDrop
 def show(title: str, sim: Simulator) -> None:
     print(f"\n=== {title} ===")
     for e in sim.events:
-        details = ", ".join(f"{k}={str(v)[:12]}" for k, v in e.data.items())
+        details = ", ".join(f"{k}={v}" for k, v in e.data.items() if k != "checksum")
         print(f"  t={e.t:>4}s  {e.name:<36} {details}")
     print(f"  -> state={sim.state}, running firmware {sim.active_version}, "
           f"settings={sim.settings}, working={sim.is_working}")
@@ -22,7 +22,8 @@ def full_update(sim: Simulator) -> Simulator:
     if sim.state == "DOWNLOADED":
         sim.install()
         sim.run()
-        sim.reboot()
+        if sim.state == "REBOOT_PENDING":  # skip if the install was interrupted
+            sim.reboot()
     return sim
 
 
