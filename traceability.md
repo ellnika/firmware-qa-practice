@@ -21,7 +21,7 @@ Links each requirement in [requirements.md](requirements.md) to the manual test 
 | Not tested (environment and test method) | 2 (REQ-01, REQ-03) |
 | Manual test cases | 24 (SETUP-01, TC-01 to TC-23) |
 | Manual test cases with no requirement | 0 |
-| Automated tests | 27 test functions, 30 test runs (with parameters), all passing |
+| Automated tests | 30 test functions, 35 test runs (with parameters), all passing |
 
 ---
 
@@ -32,9 +32,9 @@ Links each requirement in [requirements.md](requirements.md) to the manual test 
 | REQ-01 | Fire TV Stick, A/B slots | (environment) | — | Device |
 | REQ-02 | TV USB power, wall adapter as control | SETUP-01, TC-14 | — | Device |
 | REQ-03 | Wi-Fi drop made at router/AP | (test method) | — | Device |
-| REQ-10 | Background download, current firmware stays active | TC-01, TC-15, TC-16, TC-18, TC-19 | `test_wifi_drop_keeps_current_firmware` | Both |
-| REQ-11 | Integrity check rejects bad image | TC-06 | `test_incomplete_image_rejected`, `test_corrupt_image_rejected` | Both |
-| REQ-12 | Install to inactive slot, applied on reboot | TC-07, TC-08, TC-12 | `test_reboot_applies_update`, `test_power_loss_during_install_keeps_old_slot` | Both |
+| REQ-10 | Background download, current firmware stays active | TC-01, TC-15, TC-16, TC-18, TC-19 | `test_wifi_drop_keeps_current_firmware`, `test_success_path_end_to_end` | Both |
+| REQ-11 | Integrity check rejects bad image | TC-06 | `test_incomplete_image_rejected`, `test_corrupt_image_rejected`, `test_success_path_end_to_end` | Both |
+| REQ-12 | Install to inactive slot, applied on reboot | TC-07, TC-08, TC-12 | `test_reboot_applies_update`, `test_power_loss_during_install_keeps_old_slot`, `test_success_path_end_to_end` | Both |
 | REQ-13 | Never unbootable | TC-08, TC-11, TC-12, TC-13, TC-20 | `test_wifi_drop_during_reboot`, `test_power_loss_during_download_resumes`, `test_power_loss_during_install_keeps_old_slot`, `test_power_loss_during_boot_counts_as_failed_boot` | Both |
 | REQ-14 | Install needs no network | TC-07 | `test_wifi_drop_during_install_no_effect` | Both |
 | REQ-20 | 5-min timer starts at failure | TC-03, TC-04 | `test_retry_timing_five_retries_60s_apart`, `test_five_minute_cutoff_boundary` | Both |
@@ -50,14 +50,14 @@ Links each requirement in [requirements.md](requirements.md) to the manual test 
 | REQ-40 | Failed boot = no home screen | TC-13, TC-20 | `test_power_loss_during_boot_counts_as_failed_boot` | Both |
 | REQ-41 | Rollback after 3 failed boots | TC-20 | `test_two_failed_boots_still_updates`, `test_three_failed_boots_roll_back` | Both |
 | REQ-42 | Working after rollback | TC-20 | `test_three_failed_boots_roll_back` | Both |
-| REQ-50 | Settings kept after update | TC-21 | `test_settings_kept_after_update`, `test_settings_kept_after_power_loss_during_install`, `test_settings_loss_is_detected` | Both |
+| REQ-50 | Settings kept after update | TC-21 | `test_settings_kept_after_update`, `test_settings_kept_after_power_loss_during_install`, `test_settings_loss_is_detected`, `test_success_path_end_to_end` | Both |
 | REQ-51 | Settings kept after rollback | TC-22 | `test_settings_kept_after_rollback`, `test_settings_loss_is_detected` | Both |
 | REQ-60 | Resume as soon as Wi-Fi returns | TC-02 | `test_brief_drop_resumes_on_reconnect` | Both |
 | REQ-61 | Resume after reboot/power loss mid-download | TC-11 | `test_power_loss_during_download_resumes`, `test_reboot_while_waiting_for_network_keeps_waiting` | Both |
 | REQ-62 | Each drop starts a new 5-min window | TC-05 | `test_each_drop_starts_new_retry_window` | Both |
 | REQ-63 | Manual retry while offline fails once | — | `test_manual_retry_offline_fails_once` | Sim |
 | REQ-64 | Rejected image is deleted, not re-downloaded | TC-06 | `test_incomplete_image_rejected` | Both |
-| REQ-65 | Install is not automatic | — | `test_install_not_automatic` | Sim |
+| REQ-65 | Install is not automatic | — | `test_install_not_automatic`, `test_success_path_end_to_end` | Sim |
 | REQ-70 *(Proposed)* | Screensaver has no effect on download | TC-09 | — | Device |
 | REQ-71 *(Proposed)* | Download resumes after deep sleep | TC-10 | — | Device |
 | REQ-72 *(Proposed)* | Menus and remote stay responsive | TC-16, TC-18 | — | Device |
@@ -78,7 +78,7 @@ Links each requirement in [requirements.md](requirements.md) to the manual test 
 | TC-05 | P2 | REQ-30, REQ-62 | `test_repeated_drops_never_stuck`, `test_each_drop_starts_new_retry_window` | Yes, once |
 | TC-06 | P0 | REQ-11, REQ-64 | `test_incomplete_image_rejected`, `test_corrupt_image_rejected` | Yes (real signature check) |
 | TC-07 | P0 | REQ-12, REQ-14 | `test_wifi_drop_during_install_no_effect` | Yes (real flash) |
-| TC-08 | P0 | REQ-12, REQ-13 | `test_reboot_applies_update`, `test_wifi_drop_during_reboot` | Yes (real bootloader) |
+| TC-08 | P0 | REQ-12, REQ-13 | `test_reboot_applies_update`, `test_wifi_drop_during_reboot`, `test_success_path_end_to_end` | Yes (real bootloader) |
 | TC-09 | P3 | REQ-22, REQ-70 | — (screensaver not modelled) | Yes |
 | TC-10 | P2 | REQ-71 | — (deep sleep not modelled) | Yes |
 | TC-11 | P2 | REQ-02, REQ-13, REQ-61 | `test_power_loss_during_download_resumes` | Yes (TV power) |
@@ -91,7 +91,7 @@ Links each requirement in [requirements.md](requirements.md) to the manual test 
 | TC-18 | P3 | REQ-10, REQ-72 | — (UI not modelled) | Yes |
 | TC-19 | P3 | REQ-10, REQ-74 | — (playback not modelled) | Yes |
 | TC-20 | P0 | REQ-13, REQ-40, REQ-41, REQ-42 | `test_three_failed_boots_roll_back`, `test_two_failed_boots_still_updates` | Yes (real bootloader, broken test build) |
-| TC-21 | P1 | REQ-50 | `test_settings_kept_after_update` | Yes |
+| TC-21 | P1 | REQ-50 | `test_settings_kept_after_update`, `test_success_path_end_to_end` | Yes |
 | TC-22 | P1 | REQ-51 | `test_settings_kept_after_rollback` | Yes |
 | TC-23 | P2 | REQ-25 | `test_resume_not_possible_restarts_from_zero` | Yes (needs server access) |
 
@@ -107,6 +107,9 @@ Run with `python -m pytest -v` (see [README](README.md#run-the-automated-tests))
 | [tests/test_verify_install.py](tests/test_verify_install.py) | 5 | Integrity check, install without Wi-Fi, power loss during install, install not automatic |
 | [tests/test_boot_rollback.py](tests/test_boot_rollback.py) | 5 | Reboot into 2.0, power loss during boot, 2 vs 3 failed boots, rollback |
 | [tests/test_settings.py](tests/test_settings.py) | 4 functions (5 runs) | Settings after update, rollback and power loss; a check that a lost setting is really detected |
+| [tests/test_success_path.py](tests/test_success_path.py) | 3 functions (5 runs) | Clean update 1.0 → 2.0, optional and mandatory: every stage, exact event sequence, timing, settings kept |
+
+Shared pytest fixtures (`device`, `any_update_device`, `user_settings`) are in [tests/conftest.py](tests/conftest.py).
 
 Each test's docstring names its test case and requirements, e.g. `"""TC-03 | REQ-23, REQ-31"""`.
 
