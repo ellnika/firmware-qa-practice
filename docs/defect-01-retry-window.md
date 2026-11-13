@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | Fixed on branch `defect/retry-window` |
+| Status | Fixed; merged to `main` in [PR #1](https://github.com/ellnika/firmware-qa-practice/pull/1) |
 | Type | Seeded on purpose, to check that the tests and CI catch a realistic defect |
 | Requirement broken | REQ-62 (each drop starts a new 5-minute window), and as a side effect REQ-21 (retry every 60 s) |
 | Severity | High: an optional update gives up and shows the error message after a short outage |
@@ -69,7 +69,7 @@ Added `test_retries_60s_after_each_drop`: two drops, and the first retry after e
 
 - Fix: restore the original lines, so every new drop sets `_failed_at` to its own time and every resume clears it.
 - Local run after the fix: 39 passed (38 before + the new test).
-- CI after the fix: see the "fix" commit on the `defect/retry-window` branch.
+- CI after the fix: [run 43480166783](https://github.com/ellnika/firmware-qa-practice/actions/runs/43480166783) (branch), [run 43500916693](https://github.com/ellnika/firmware-qa-practice/actions/runs/43500916693) (pull request), [run 43500962341](https://github.com/ellnika/firmware-qa-practice/actions/runs/43500962341) (`main` after merge), all green.
 
 ## 6. AI and human contribution
 
