@@ -21,7 +21,7 @@ Links each requirement in [requirements.md](requirements.md) to the manual test 
 | Not tested (environment and test method) | 2 (REQ-01, REQ-03) |
 | Manual test cases | 24 (SETUP-01, TC-01 to TC-23) |
 | Manual test cases with no requirement | 0 |
-| Automated tests | 31 test functions, 38 test runs (with parameters), all passing |
+| Automated tests | 32 test functions, 39 test runs (with parameters), all passing |
 
 ---
 
@@ -38,7 +38,7 @@ Links each requirement in [requirements.md](requirements.md) to the manual test 
 | REQ-13 | Never unbootable | TC-08, TC-11, TC-12, TC-13, TC-20 | `test_wifi_drop_during_reboot`, `test_power_loss_during_download_resumes`, `test_power_loss_during_install_keeps_old_slot`, `test_power_loss_during_boot_counts_as_failed_boot` | Both |
 | REQ-14 | Install needs no network | TC-07 | `test_wifi_drop_during_install_no_effect` | Both |
 | REQ-20 | 5-min timer starts at failure | TC-03, TC-04 | `test_retry_timing_five_retries_60s_apart`, `test_five_minute_cutoff_boundary` | Both |
-| REQ-21 | Retry every 60 s | TC-03, TC-04 | `test_retry_timing_five_retries_60s_apart` | Both |
+| REQ-21 | Retry every 60 s | TC-03, TC-04, TC-05 | `test_retry_timing_five_retries_60s_apart`, `test_retries_60s_after_each_drop` | Both |
 | REQ-22 | Brief drop resumes automatically | TC-02, TC-09, TC-15 | `test_brief_drop_resumes_on_reconnect`, `test_five_minute_cutoff_boundary`, `test_five_minute_cutoff_boundary_mandatory` | Both |
 | REQ-23 | Long drop, optional: manual retry | TC-03 | `test_long_drop_optional_requires_manual_retry`, `test_manual_retry_completes_download`, `test_five_minute_cutoff_boundary` | Both |
 | REQ-24 | Long drop, mandatory: restarts on reconnect | TC-04 | `test_long_drop_mandatory_restarts_on_reconnect`, `test_five_minute_cutoff_boundary_mandatory` | Both |
@@ -54,7 +54,7 @@ Links each requirement in [requirements.md](requirements.md) to the manual test 
 | REQ-51 | Settings kept after rollback | TC-22 | `test_settings_kept_after_rollback`, `test_settings_loss_is_detected` | Both |
 | REQ-60 | Resume as soon as Wi-Fi returns | TC-02 | `test_brief_drop_resumes_on_reconnect` | Both |
 | REQ-61 | Resume after reboot/power loss mid-download | TC-11 | `test_power_loss_during_download_resumes`, `test_reboot_while_waiting_for_network_keeps_waiting` | Both |
-| REQ-62 | Each drop starts a new 5-min window | TC-05 | `test_each_drop_starts_new_retry_window` | Both |
+| REQ-62 | Each drop starts a new 5-min window | TC-05 | `test_each_drop_starts_new_retry_window`, `test_retries_60s_after_each_drop` | Both |
 | REQ-63 | Manual retry while offline fails once | — | `test_manual_retry_offline_fails_once` | Sim |
 | REQ-64 | Rejected image is deleted, not re-downloaded | TC-06 | `test_incomplete_image_rejected` | Both |
 | REQ-65 | Install is not automatic | — | `test_install_not_automatic`, `test_success_path_end_to_end` | Sim |
@@ -75,7 +75,7 @@ Links each requirement in [requirements.md](requirements.md) to the manual test 
 | TC-02 | P1 | REQ-22, REQ-25, REQ-60 | `test_brief_drop_resumes_on_reconnect`, `test_five_minute_cutoff_boundary`, `test_five_minute_cutoff_boundary_mandatory` | Yes, once (real Wi-Fi timing) |
 | TC-03 | P1 | REQ-20, REQ-21, REQ-23, REQ-31, REQ-33 | `test_long_drop_optional_requires_manual_retry`, `test_manual_retry_completes_download`, `test_retry_timing_five_retries_60s_apart`, `test_five_minute_cutoff_boundary` | Yes, once |
 | TC-04 | P1 | REQ-20, REQ-21, REQ-24, REQ-32, REQ-33 | `test_long_drop_mandatory_restarts_on_reconnect`, `test_retry_timing_five_retries_60s_apart`, `test_five_minute_cutoff_boundary_mandatory` | Yes, once |
-| TC-05 | P2 | REQ-30, REQ-62 | `test_repeated_drops_never_stuck`, `test_each_drop_starts_new_retry_window` | Yes, once |
+| TC-05 | P2 | REQ-21, REQ-30, REQ-62 | `test_repeated_drops_never_stuck`, `test_each_drop_starts_new_retry_window`, `test_retries_60s_after_each_drop` | Yes, once |
 | TC-06 | P0 | REQ-11, REQ-64 | `test_incomplete_image_rejected`, `test_corrupt_image_rejected` | Yes (real signature check) |
 | TC-07 | P0 | REQ-12, REQ-14 | `test_wifi_drop_during_install_no_effect` | Yes (real flash) |
 | TC-08 | P0 | REQ-12, REQ-13 | `test_reboot_applies_update`, `test_wifi_drop_during_reboot`, `test_success_path_end_to_end` | Yes (real bootloader) |
@@ -103,7 +103,7 @@ Run with `python -m pytest -v` (see [README](README.md#run-the-automated-tests))
 
 | File | Tests | Covers |
 |---|---|---|
-| [tests/test_download.py](tests/test_download.py) | 14 functions (18 runs) | Wi-Fi drops, retry timing and the 5-minute boundary (optional and mandatory), manual retry, mandatory updates, resume vs restart, power loss mid-download |
+| [tests/test_download.py](tests/test_download.py) | 15 functions (19 runs) | Wi-Fi drops, retry timing and the 5-minute boundary (optional and mandatory), manual retry, mandatory updates, resume vs restart, power loss mid-download |
 | [tests/test_verify_install.py](tests/test_verify_install.py) | 5 | Integrity check, install without Wi-Fi, power loss during install, install not automatic |
 | [tests/test_boot_rollback.py](tests/test_boot_rollback.py) | 5 | Reboot into 2.0, power loss during boot, 2 vs 3 failed boots, rollback |
 | [tests/test_settings.py](tests/test_settings.py) | 4 functions (5 runs) | Settings after update, rollback and power loss; a check that a lost setting is really detected |
