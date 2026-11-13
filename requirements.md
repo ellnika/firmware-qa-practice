@@ -61,22 +61,32 @@ Requirements for firmware-update behavior when Wi-Fi or power is interrupted. Te
 | REQ-50 | All user settings are kept after a successful update. | Agreed |
 | REQ-51 | All user settings are also kept after a rollback to the previous firmware. | Agreed |
 
-## 7. Default behaviors (to confirm)
+## 7. Additional update behaviors
 
-Behaviors the requirements above did not cover. These defaults are used by the simulator until the team confirms or changes them.
+Behaviors the sections above did not cover, first proposed as defaults for the simulator and then confirmed.
 
 | ID | Requirement | Status |
 |---|---|---|
-| REQ-60 | During the 5-minute retry window, the download resumes as soon as Wi-Fi returns, without waiting for the next 60 s retry. | Proposed |
-| REQ-61 | If the device reboots or loses power during a download, the kept partial download resumes automatically after boot, under the normal Wi-Fi rules. A device already in `DOWNLOAD_FAILED` or `WAITING_FOR_NETWORK` stays in that state. | Proposed |
-| REQ-62 | Every new Wi-Fi drop starts a new 5-minute retry window. | Proposed |
-| REQ-63 | A manual retry while Wi-Fi is still down fails once; the device stays in `DOWNLOAD_FAILED` with the message shown. | Proposed |
-| REQ-64 | A rejected image is deleted. The device does not download it again by itself; a new download must be started. | Proposed |
-| REQ-65 | Installation does not start automatically after a successful download; it is started separately. | Proposed |
+| REQ-60 | During the 5-minute retry window, the download resumes as soon as Wi-Fi returns, without waiting for the next 60 s retry. | Agreed |
+| REQ-61 | If the device reboots or loses power during a download, the kept partial download resumes automatically after boot, under the normal Wi-Fi rules. A device already in `DOWNLOAD_FAILED` or `WAITING_FOR_NETWORK` stays in that state. | Agreed |
+| REQ-62 | Every new Wi-Fi drop starts a new 5-minute retry window. | Agreed |
+| REQ-63 | A manual retry while Wi-Fi is still down fails once; the device stays in `DOWNLOAD_FAILED` with the message shown. | Agreed |
+| REQ-64 | A rejected image is deleted. The device does not download it again by itself; a new download must be started. | Agreed |
+| REQ-65 | Installation does not start automatically after a successful download; it is started separately. | Agreed |
 
-**Not covered yet:** low storage (TC-17), sleep and screensaver (TC-09, TC-10), and streaming, menus and remote input during an update (TC-15, TC-16, TC-18, TC-19).
+## 8. Device behavior during an update
 
-## 8. Definitions
+How the device must behave for the user while an update is in progress. These cover TC-09, TC-10 and TC-15 to TC-19.
+
+| ID | Requirement | Status |
+|---|---|---|
+| REQ-70 | **Screensaver:** an active screensaver has no effect on the download. Wi-Fi drops are handled by the normal rules (REQ-20 to REQ-25), and exiting the screensaver does not interrupt the download. | Proposed |
+| REQ-71 | **Deep sleep:** when the device wakes, it reconnects to Wi-Fi and an interrupted download resumes under the normal rules (REQ-20 to REQ-25). | Proposed |
+| REQ-72 | **Menus and remote:** menus and remote input stay responsive during a download and during a Wi-Fi drop. The device does not crash or freeze. | Proposed |
+| REQ-73 | **Low storage:** the download never uses more storage than the image size. If there is not enough free storage, the download stops cleanly with a message to the user, and the current firmware is unaffected. | Proposed |
+| REQ-74 | **Playback:** content playback works normally during a download and right after Wi-Fi returns. The download continues in the background and does not block playback. | Proposed |
+
+## 9. Definitions
 
 | Term | Meaning |
 |---|---|
@@ -85,7 +95,7 @@ Behaviors the requirements above did not cover. These defaults are used by the s
 | **Optional update** | The user decides when to retry after a long Wi-Fi drop. |
 | **Mandatory update** | The device restarts the download by itself when Wi-Fi returns. |
 
-## 9. Resolved questions
+## 10. Resolved questions
 
 | ID | Question | Decision |
 |---|---|---|
@@ -94,6 +104,6 @@ Behaviors the requirements above did not cover. These defaults are used by the s
 | OPEN-03 | Install without Wi-Fi | Install needs no network (REQ-14) |
 | OPEN-04 | Message wording | Proposed text accepted (REQ-31) |
 
-## 10. Changes from the earlier baseline
+## 11. Changes from the earlier baseline
 
-The baseline assumptions in [fw-update-test-cases.md](fw-update-test-cases.md) say "Retry policy: 10 retries x 60 s; the 5-minute cutoff takes precedence." Because the 5-minute cutoff always comes first, the 10-retry limit can never be reached. These requirements replace it with REQ-21: retry every 60 s, for at most 5 minutes. The test-case file has not been updated to match.
+The baseline assumptions in [fw-update-test-cases.md](fw-update-test-cases.md) say "Retry policy: 10 retries x 60 s; the 5-minute cutoff takes precedence." Because the 5-minute cutoff always comes first, the 10-retry limit can never be reached. These requirements replace it with REQ-21: retry every 60 s, for at most 5 minutes. The test-case file has been updated to match.

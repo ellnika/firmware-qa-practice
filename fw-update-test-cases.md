@@ -24,13 +24,17 @@
 | [TC-17](#tc-17-wi-fi-drop-during-download-with-low-storage) | P2 | Wi-Fi drop during download with low storage |
 | [TC-18](#tc-18-user-presses-remote-buttons-during-wi-fi-drop) | P3 | User presses remote buttons during Wi-Fi drop |
 | [TC-19](#tc-19-user-starts-playback-right-after-wi-fi-returns) | P3 | User starts playback right after Wi-Fi returns |
+| [TC-20](#tc-20-new-firmware-fails-to-boot-device-rolls-back) | P0 | New firmware fails to boot, device rolls back |
+| [TC-21](#tc-21-settings-kept-after-a-successful-update) | P1 | Settings kept after a successful update |
+| [TC-22](#tc-22-settings-kept-after-a-rollback) | P1 | Settings kept after a rollback |
+| [TC-23](#tc-23-download-restarts-from-0-when-resume-is-not-possible) | P2 | Download restarts from 0% when resume is not possible |
 
 ---
 
 ## Baseline assumptions
 - Device: Fire TV Stick, A/B partitions, powered from TV USB port (wall adapter as control).
 - Update downloads in the background, is integrity-checked (hash/signature), and applies on reboot.
-- Brief drop (< 5 min): download resumes automatically. Drop > 5 min: user must retry manually, unless the update is mandatory (then retries automatically). Retry policy: 10 retries x 60 s; the 5-minute cutoff takes precedence.
+- Brief drop (< 5 min): download resumes automatically. Drop > 5 min: user must retry manually, unless the update is mandatory (then retries automatically). Retry policy: retry every 60 s, for at most 5 minutes after the drop (see [requirements.md](requirements.md), REQ-21).
 - Wi-Fi drop is simulated at the router/AP (AP off or device blocked).
 - **"Device is working"** = boots to home screen, connects to Wi-Fi, plays content, remote responds.
 - **Version check** = Settings > About, plus ADB where available.
@@ -123,6 +127,8 @@
 **Expected results**
 
 - Download does not resume automatically; user can retry manually.
+- Automatic retries happen every 60 s and stop 5 min after the drop.
+- Message shown with a **Retry** button: "Update couldn't be downloaded. Check your connection and try again."
 - 1.0 remains active and device is working.
 - Manual retry completes the download.
 
@@ -143,6 +149,7 @@
 
 **Expected results**
 
+- Automatic retries happen every 60 s and stop 5 min after the drop; no message is shown.
 - Download retries automatically after Wi-Fi returns and completes.
 - 1.0 active until reboot.
 - Device is working.
@@ -450,3 +457,92 @@
 - Playback starts normally.
 - Download resumes in background.
 - 1.0 active until reboot.
+
+---
+
+### TC-20: New firmware fails to boot, device rolls back
+
+**Priority: P0**
+
+**Preconditions**
+
+- Device on 1.0 (slot A); a 2.0 test build that cannot reach the home screen is installed to slot B, reboot pending
+
+**Steps**
+
+1. Reboot.
+2. Watch the boot attempts until the device settles.
+3. Check the version.
+
+**Expected results**
+
+- Device tries to boot 2.0 three times in a row, then switches back to slot A.
+- Device boots 1.0 from slot A and is working.
+- Never unbootable.
+
+---
+
+### TC-21: Settings kept after a successful update
+
+**Priority: P1**
+
+**Preconditions**
+
+- Device on 1.0; settings changed from defaults (e.g. language, Wi-Fi network, display, signed-in account, installed apps); 2.0 available
+
+**Steps**
+
+1. Note all changed settings.
+2. Download and install 2.0, then reboot.
+3. Check the version and every noted setting.
+
+**Expected results**
+
+- 2.0 active.
+- Every noted setting is the same as before the update.
+- Device is working.
+
+---
+
+### TC-22: Settings kept after a rollback
+
+**Priority: P1**
+
+**Preconditions**
+
+- Device on 1.0 with settings changed from defaults; a 2.0 test build that cannot reach the home screen is installed to slot B, reboot pending
+
+**Steps**
+
+1. Note all changed settings.
+2. Reboot and wait for the rollback (see TC-20).
+3. Check the version and every noted setting.
+
+**Expected results**
+
+- 1.0 active after the rollback.
+- Every noted setting is the same as before the update.
+- Device is working.
+
+---
+
+### TC-23: Download restarts from 0% when resume is not possible
+
+**Priority: P2**
+
+**Preconditions**
+
+- Device on 1.0; 2.0 available; tester can publish a new 2.0 image on the update server
+
+**Steps**
+
+1. Start download.
+2. Drop Wi-Fi at about 40%.
+3. While Wi-Fi is down, publish a new 2.0 image on the server.
+4. Restore Wi-Fi.
+
+**Expected results**
+
+- Download restarts from 0%, not from 40%.
+- Download completes and passes the integrity check.
+- 1.0 active until reboot; device is working.

@@ -1,5 +1,7 @@
 # Firmware QA Practice: FW update under Wi-Fi interruption
 
+[![tests](https://github.com/ellnika/firmware-qa-practice/actions/workflows/tests.yml/badge.svg)](https://github.com/ellnika/firmware-qa-practice/actions/workflows/tests.yml)
+
 QA practice project for over-the-air firmware updates on a streaming stick with A/B partitions. It covers what happens when Wi-Fi or power is lost during download, install or reboot.
 
 ## Contents
@@ -8,13 +10,18 @@ QA practice project for over-the-air firmware updates on a streaming stick with 
 |---|---|
 | [requirements.md](requirements.md) | Update behavior requirements (retry rules, rollback, settings preservation), each with an ID and status |
 | [fw-update-test-cases.md](fw-update-test-cases.md) | Test cases with preconditions, steps, expected results and priority (P0–P3) |
-| [traceability.md](traceability.md) | Which test cases and planned automated tests cover each requirement, plus gaps found in review |
+| [traceability.md](traceability.md) | Which test cases and automated tests cover each requirement, plus open points |
 | [fwsim/](fwsim/) | A small Python simulator of the update logic, for automated tests without hardware |
 | [demo.py](demo.py) | Runs six update scenarios on the simulator and prints what happens |
+| [tests/](tests/) | Automated pytest tests against the simulator; they run on GitHub Actions for every push |
 
 ## How to run
 
-**Requirements:** Python 3.10 or newer. Nothing to install: the simulator uses only the standard library. Check your version with `python3 --version`.
+**Requirements:** Python 3.10 or newer. Check your version with `python3 --version`.
+
+### Run the demo
+
+Nothing to install: the simulator uses only the standard library.
 
 ```
 git clone https://github.com/ellnika/firmware-qa-practice.git
@@ -39,6 +46,23 @@ The demo runs six scenarios: a normal update, a brief and a long Wi-Fi drop (opt
 - The `->` line is where the device ended up: its state, the firmware it runs, its settings, and whether it is working.
 
 To try your own scenario, copy a block in `demo.py` and change the faults, e.g. `WifiDrop(at_percent=80, duration_s=200)`.
+
+### Run the automated tests
+
+Install pytest once, in a virtual environment so your system Python stays unchanged:
+
+```
+python3 -m venv .venv
+.venv/bin/pip install -r requirements-dev.txt
+```
+
+Then run the tests:
+
+```
+.venv/bin/python -m pytest -v
+```
+
+Each test prints `PASSED` or `FAILED`. Each test's docstring names the test case and requirements it checks, e.g. `TC-03 | REQ-23, REQ-31`. The same tests run on GitHub Actions for every push (see the badge at the top).
 
 ## Simulator
 
@@ -68,6 +92,7 @@ assert sim.active_version == "1.0"
 
 ## Status
 
-- Requirements: core rules agreed; section 7 lists default behaviors still to confirm.
-- Traceability: requirements mapped to test cases and 24 planned pytest tests; gaps listed in [traceability.md](traceability.md).
-- Automated pytest suite: planned, not written yet.
+- Requirements: 29 agreed; REQ-70 to REQ-74 (screensaver, sleep, UI, storage, playback) proposed.
+- Manual test cases: 24, with P0–P3 priorities.
+- Automated tests: 30 test runs against the simulator, all passing; run in CI on every push.
+- Traceability and open points: [traceability.md](traceability.md).
