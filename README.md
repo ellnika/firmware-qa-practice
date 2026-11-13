@@ -94,5 +94,6 @@ assert sim.active_version == "1.0"
 
 - Requirements: 29 agreed; REQ-70 to REQ-74 (screensaver, sleep, UI, storage, playback) proposed.
 - Manual test cases: 24, with P0–P3 priorities.
-- Automated tests: 38 test runs against the simulator, all passing; run in CI on every push.
+- Automated tests: 39 test runs against the simulator, all passing; run in CI on every push.
 - Traceability and open points: [traceability.md](traceability.md).
+- Defect investigation example: [docs/defect-01-retry-window.md](docs/defect-01-retry-window.md).

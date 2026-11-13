@@ -150,6 +150,17 @@ def test_each_drop_starts_new_retry_window():
     assert sim.state == "DOWNLOADED"
 
 
+def test_retries_60s_after_each_drop():
+    """TC-05 | REQ-21, REQ-62: after every drop, the first retry is 60 s after
+    that drop, not timed from an earlier one. Found while triaging defect 01."""
+    sim = download(make(WifiDrop(at_percent=20, duration_s=240, repeat=2, interval_s=10)))
+
+    drops = [e.t for e in events(sim, "download_interrupted")]
+    first_retries = [e.t for e in events(sim, "auto_retry_failed") if e.data["attempt"] == 1]
+    assert len(drops) == 2
+    assert [r - d for r, d in zip(first_retries, drops)] == [60, 60]
+
+
 def test_resume_not_possible_restarts_from_zero():
     """TC-23 | REQ-25"""
     sim = make(WifiDrop(at_percent=40, duration_s=30), ResumeNotPossible())
