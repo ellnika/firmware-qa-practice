@@ -257,7 +257,9 @@ class Simulator:
             self._verify()
 
     def _download_failed(self) -> None:
-        self._failed_at = self.time  # REQ-20: timer starts at the failure
+        # Keep the original failure time so a resume doesn't reset the timer.
+        if self._failed_at is None:
+            self._failed_at = self.time  # REQ-20: timer starts at the failure
         self.retry_count = 0
         self._log("download_interrupted", percent=round(self.progress_percent, 1))
         self._set_state(State.RETRY_WAIT)
@@ -292,7 +294,6 @@ class Simulator:
 
     def _resume(self) -> None:
         """Continue from the partial download, or restart if impossible (REQ-25)."""
-        self._failed_at = None
         if self._resume_failures and self.downloaded_mb > 0:
             self._resume_failures -= 1
             self.downloaded_mb = 0.0
