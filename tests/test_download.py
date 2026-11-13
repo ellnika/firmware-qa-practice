@@ -94,6 +94,27 @@ def test_five_minute_cutoff_boundary(drop_s, expected):
     assert sim.state == expected
 
 
+@pytest.mark.parametrize(
+    "drop_s, retries_stopped",
+    [(299, False), (300, False), (301, True)],
+)
+def test_five_minute_cutoff_boundary_mandatory(drop_s, retries_stopped):
+    """TC-02, TC-04 | REQ-22, REQ-24, REQ-32 (boundary around 5 min, mandatory)
+
+    Both sides end DOWNLOADED, so check which path the device took: up to
+    5:00 it resumes as a brief drop; after 5:00 retries stop, it waits for
+    the network without a message, and restarts on reconnect.
+    """
+    sim = download(make(WifiDrop(at_percent=40, duration_s=drop_s), mandatory=True))
+
+    assert bool(events(sim, "retries_stopped_waiting_for_network")) == retries_stopped
+    assert bool(events(sim, "auto_restart_on_reconnect")) == retries_stopped
+    assert bool(events(sim, "wifi_back_resume")) != retries_stopped
+    assert events(sim, "download_resumed")[0].data["percent"] == 40  # never from 0%
+    assert sim.message is None  # REQ-32: no message for mandatory updates
+    assert sim.state == "DOWNLOADED"
+
+
 def test_long_drop_mandatory_restarts_on_reconnect():
     """TC-04 | REQ-24, REQ-30, REQ-32, REQ-33"""
     sim = make(WifiDrop(at_percent=40, duration_s=360), mandatory=True)
