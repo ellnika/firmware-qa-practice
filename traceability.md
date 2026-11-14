@@ -13,12 +13,13 @@ Links each requirement in [requirements.md](requirements.md) to the manual test 
 
 | | Count |
 |---|---|
-| Requirements | 34 (29 Agreed, 5 Proposed) |
+| Requirements | 35 (29 Agreed, 6 Proposed) |
 | Covered by a manual test case | 30 |
 | Covered by an automated simulator test | 26 |
 | Covered only by automated tests (no manual test case) | 2 (REQ-63, REQ-65) |
 | Covered only on the device (not modelled in the simulator) | 6 (REQ-02, REQ-70 to REQ-74) |
 | Not tested (environment and test method) | 2 (REQ-01, REQ-03) |
+| Not covered yet (proposed, waiting for the team) | 1 (REQ-66) |
 | Manual test cases | 24 (SETUP-01, TC-01 to TC-23) |
 | Manual test cases with no requirement | 0 |
 | Automated tests | 32 test functions, 39 test runs (with parameters), all passing |
@@ -58,6 +59,7 @@ Links each requirement in [requirements.md](requirements.md) to the manual test 
 | REQ-63 | Manual retry while offline fails once | — | `test_manual_retry_offline_fails_once` | Sim |
 | REQ-64 | Rejected image is deleted, not re-downloaded | TC-06 | `test_incomplete_image_rejected` | Both |
 | REQ-65 | Install is not automatic | — | `test_install_not_automatic`, `test_success_path_end_to_end` | Sim |
+| REQ-66 *(Proposed)* | Overall download time limit | — | — (add once the limit is agreed) | Both (planned) |
 | REQ-70 *(Proposed)* | Screensaver has no effect on download | TC-09 | — | Device |
 | REQ-71 *(Proposed)* | Download resumes after deep sleep | TC-10 | — | Device |
 | REQ-72 *(Proposed)* | Menus and remote stay responsive | TC-16, TC-18 | — | Device |
@@ -119,6 +121,7 @@ Each test's docstring names its test case and requirements, e.g. `"""TC-03 | REQ
 
 | Item | Note |
 |---|---|
+| REQ-66 | **Proposed** after reviewing defect 01: repeated short drops each reset the 5-minute window, and no requirement limits the total download time. Needs a value for *X* and a decision for mandatory updates ([requirements.md](requirements.md) §7). Then add a test case and a simulator test. |
 | REQ-70 to REQ-74 | **Proposed**, waiting for confirmation. Device-only: the simulator does not model the screensaver, sleep, storage, UI or playback. |
 | Exactly 5-minute drop | TC-02 and TC-03 say "< 5 min" and "> 5 min". The tests define the boundary: Wi-Fi back at exactly 5:00 counts as a brief drop (`test_five_minute_cutoff_boundary`). Confirm this with the team. |
 | TC-20, TC-22 | Need a deliberately broken 2.0 test build that cannot reach the home screen. |

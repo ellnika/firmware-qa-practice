@@ -63,7 +63,7 @@ Requirements for firmware-update behavior when Wi-Fi or power is interrupted. Te
 
 ## 7. Additional update behaviors
 
-Behaviors the sections above did not cover, first proposed as defaults for the simulator and then confirmed.
+Behaviors the sections above did not cover, first proposed as defaults for the simulator and then confirmed. REQ-66 is still proposed.
 
 | ID | Requirement | Status |
 |---|---|---|
@@ -73,6 +73,12 @@ Behaviors the sections above did not cover, first proposed as defaults for the s
 | REQ-63 | A manual retry while Wi-Fi is still down fails once; the device stays in `DOWNLOAD_FAILED` with the message shown. | Agreed |
 | REQ-64 | A rejected image is deleted. The device does not download it again by itself; a new download must be started. | Agreed |
 | REQ-65 | Installation does not start automatically after a successful download; it is started separately. | Agreed |
+| REQ-66 | **Overall download time limit:** because every new drop starts a new 5-minute window (REQ-62), a connection that keeps dropping could keep a download going indefinitely. If the download has not finished within *X* hours of first starting (value to be agreed), automatic retries stop. An optional update then goes to `DOWNLOAD_FAILED` with the message (REQ-31). For a mandatory update the behavior is still open, see below. | Proposed |
+
+**Open questions for REQ-66**
+- What is *X*? It should be long enough for a slow but working connection to finish.
+- Does time count while the device is off or asleep?
+- Mandatory update: going to `WAITING_FOR_NETWORK` (REQ-32) would restart the download on the next reconnect, so the limit would have no effect. Options: wait until the next day, wait for a stable connection (e.g. 10 min without a drop), or show the user a message.
 
 ## 8. Device behavior during an update
 
