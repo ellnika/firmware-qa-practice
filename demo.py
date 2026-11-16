@@ -40,6 +40,7 @@ show("Brief Wi-Fi drop (30 s)",
 sim = Simulator(settings=settings, faults=[WifiDrop(at_percent=40, duration_s=360)])
 sim.start_download()
 sim.run()
+sim.advance(60)  # Wi-Fi is back at t=400: device works on 1.0, no automatic resume (REQ-33)
 show("Long Wi-Fi drop (6 min), optional update", sim)
 
 # 4. Same drop, mandatory update: restarts by itself when Wi-Fi returns (REQ-24, REQ-32).

@@ -14,6 +14,7 @@ QA practice project for over-the-air firmware updates on a streaming stick with 
 | [fwsim/](fwsim/) | A small Python simulator of the update logic, for automated tests without hardware |
 | [demo.py](demo.py) | Runs six update scenarios on the simulator and prints what happens |
 | [tests/](tests/) | Automated pytest tests against the simulator; they run on GitHub Actions for every push |
+| [docs/](docs/) | [Test plan](docs/test-plan.md), [release assessment](docs/release-assessment.md) and a [defect investigation](docs/defect-01-retry-window.md) |
 
 ## How to run
 
@@ -90,10 +91,33 @@ assert sim.active_version == "1.0"
 
 **Checks:** `state`, `active_version`, `slots`, `settings`, `retry_count`, `failed_boots`, `message`, `is_working`, `events`.
 
-## Status
+## Results
 
-- Requirements: 29 agreed; REQ-70 to REQ-74 (screensaver, sleep, UI, storage, playback) proposed.
-- Manual test cases: 24, with P0–P3 priorities.
-- Automated tests: 39 test runs against the simulator, all passing; run in CI on every push.
-- Traceability and open points: [traceability.md](traceability.md).
-- Defect investigation example: [docs/defect-01-retry-window.md](docs/defect-01-retry-window.md).
+- **Requirements:** 35 (29 agreed; 6 proposed: REQ-66 overall download time limit, and REQ-70 to REQ-74 for screensaver, sleep, UI, storage and playback). 26 are covered by automated simulator tests, 6 can only be tested on the device, 2 describe the environment and test method, and REQ-66 waits for the team. See [traceability.md](traceability.md).
+- **Manual test cases:** 24, with P0–P3 priorities.
+- **Automated tests:** 32 test functions, 39 runs, all passing locally, from a fresh clone, and in CI on Python 3.10 and 3.12.
+- **Defects found:** a retry-timing bug in the simulator and a "10 retries" error in the old test cases, both fixed. A seeded defect was caught by the tests and CI, and its investigation closed a test gap: [docs/defect-01-retry-window.md](docs/defect-01-retry-window.md).
+- **Release assessment:** ready for device testing, not a release sign-off. All P0 cases must pass on a real device first: [docs/release-assessment.md](docs/release-assessment.md).
+
+## Limitations
+
+- **Simulator, not a device.** `fwsim` models the update rules, not the real flash, bootloader, signature check or Wi-Fi stack. Passing tests show the logic is right, not that a real device behaves this way. No device results are included here.
+- **Simulated time.** Retries and timeouts run in simulated seconds, so real-world timing (slow networks, a router taking time to reconnect) is not covered.
+- **Simplified device.** "Working" means booted on a valid slot with Wi-Fi up. Playback, remote input and the UI are not modelled, so REQ-70 to REQ-74 are device-only.
+- **Open points:** the exact 5:00 boundary needs team confirmation, and some device tests need a broken test build or an update-server hook ([traceability.md §5](traceability.md#5-open-points)).
+
+## How AI was used
+
+This project was done by one QA engineer working with two AI assistants. The roles are defined in the [test plan](docs/test-plan.md#8-roles-and-use-of-ai).
+
+| Role | Who | What they did |
+|---|---|---|
+| Test owner | Ewa | Owns the test plan: scope, risk priorities, entry and exit criteria. Reviewed and approved AI output before it counted. Decided severity and the release recommendation. Found the missing overall download limit (REQ-66) while investigating defect 01 |
+| Planning assistant | ChatGPT | Proposed the project idea, milestones and task breakdown |
+| Implementation assistant | Claude Code | Wrote the simulator, pytest suite, CI workflow, traceability matrix and documents; investigated failures; posted evidence on the task board. Commits it contributed to carry a `Co-Authored-By: Claude` line |
+
+Rules the AI output had to meet:
+- Nothing counts as done until the test owner has reviewed it.
+- A test must assert what its requirement means, not just pass, and must fail on a planted defect.
+- AI findings in a defect investigation are checked against the actual test output and logs.
+- No claims of device validation from simulator results.
