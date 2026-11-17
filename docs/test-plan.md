@@ -98,7 +98,7 @@ Two phases, using the same requirements and test cases.
 
 | Role | Who | Responsibilities |
 |---|---|---|
-| Test owner | Ewa | Owns this plan: scope, priorities, entry and exit criteria. Reviews and approves AI output before it is committed. Decides severity and the release recommendation. Raises gaps in the requirements |
+| Test owner | Ewa | Defined the requirements and manual test cases. Owns this plan: scope, priorities, entry and exit criteria. Reviews and approves AI output before it is committed. Decides severity and the release recommendation. Raises gaps in the requirements |
 | Planning assistant | ChatGPT | Proposed the project idea, milestones and task breakdown |
 | Implementation assistant | Claude Code | Writes the simulator, tests, CI and documents; investigates failures; posts evidence on the task board |
 

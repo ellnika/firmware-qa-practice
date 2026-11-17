@@ -112,7 +112,7 @@ This project was done by one QA engineer working with two AI assistants. The rol
 
 | Role | Who | What they did |
 |---|---|---|
-| Test owner | Ewa | Owns the test plan: scope, risk priorities, entry and exit criteria. Reviewed and approved AI output before it counted. Decided severity and the release recommendation. Found the missing overall download limit (REQ-66) while investigating defect 01 |
+| Test owner | Ewa | Defined the requirements and manual test cases. Owns the test plan: scope, risk priorities, entry and exit criteria. Reviewed and approved AI output before it counted. Decided severity and the release recommendation. Found the missing overall download limit (REQ-66) while investigating defect 01 |
 | Planning assistant | ChatGPT | Proposed the project idea, milestones and task breakdown |
 | Implementation assistant | Claude Code | Wrote the simulator, pytest suite, CI workflow, traceability matrix and documents; investigated failures; posted evidence on the task board. Commits it contributed to carry a `Co-Authored-By: Claude` line |
 
